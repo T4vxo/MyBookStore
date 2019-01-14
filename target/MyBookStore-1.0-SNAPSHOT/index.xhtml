@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+        <style>
+            .ui-button{
+                background-color: yellowgreen !important;
+                color: #666666 !important;
+            }
+            #bookTable_head{
+                background-color: yellowgreen !important;
+            }
+            .ui-g-8{
+                box-shadow: 0px 14px 60px -11px rgba(0,0,0,0.75);
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div class="ui-g">
+            <div class="ui-g-2"></div><!--vänsterspalt-->
+            <div class="ui-g-8">
+                <p:dataTable value="#{bookBean.books}" var="book" id="bookTable">
+                    <p:column headerText="Titel">
+                        <h:outputText value="#{book.title}" />
+                    </p:column>
+                    <p:column headerText="Beskrivning">
+                        <h:outputText value="#{book.description}" />
+                    </p:column>
+                    <p:column headerText="Författare">
+                        <h:outputText value="#{book.author.name}" />
+                    </p:column>
+                    <p:column headerText="Pris">
+                        <h:outputText value="#{book.price}" />
+                    </p:column>
+                    <p:column headerText="Uppdatera">
+                        <p:commandButton icon="fa fa-edit" 
+                                         onclick="PF('updateDialog').show();"
+                                         action="#{bookBean.setUpdateBookForm(book.id)}"
+                                         update=":updateForm"
+                                         />
+                    </p:column>
+                </p:dataTable>
+                <p:dialog header="Add book" widgetVar="addBookDialog">     
+                    <h:form id="addForm">
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="Titel" for="title"/>
+                            <p:inputText value="#{bookBean.addBookTitle}" id="title"/>
+
+                            <p:outputLabel value="Författare" for="author"/>  
+                            <p:selectOneMenu value="#{bookBean.addBookAuthor_id}" id="author">
+                                <f:selectItems value="#{bookBean.authors}"
+                                               var="author"
+                                               itemLabel="#{author.name}"
+                                               itemValue="#{author.id}"/>
+                            </p:selectOneMenu>
+
+                            <p:outputLabel value="Pris" for="price"/>    
+                            <p:inputNumber value="#{bookBean.addBookPrice}" id="price"/>
+                            <p:outputLabel value="Beskrivning" for="desc"/>
+                            <p:inputTextarea value="#{bookBean.addBookDescription}" id="desc" />
+                            ´
+                            <h:panelGroup />
+                            <p:commandButton value="Add" 
+                                             action="#{bookBean.addBook()}"
+                                             update=":bookTable :addForm"/>
+                        </h:panelGrid>
+                    </h:form>
+                </p:dialog>
+                <p:commandButton icon="fa fa-book" onclick="PF('addBookDialog').show();" />
+                <!--updateForm-->
+                <p:dialog header="Uppdatera bok" widgetVar="updateDialog" closeOnEscape="true">
+                    <h:form id="updateForm">
+                        <p:panelGrid columns="2">
+                            <h:outputLabel value="id" for="id"/>
+                            <p:inputText value="#{bookBean.updateBook.id}" id="id"
+                                         disabled="true"/>
+                            <h:outputLabel value="titel" for="title"/>
+                            <p:inplace>
+                                <p:inputText value="#{bookBean.updateBook.title}" id="title"/>
+                            </p:inplace>
+                            <h:outputLabel value="Beskrivning" for="desc"/>
+                            <p:inplace>
+                                <p:inputTextarea value="#{bookBean.updateBook.description}" id="desc"/>
+                            </p:inplace>
+                            <h:outputLabel value="Författare" for="author"/>
+                            <p:inputText value="#{bookBean.updateBook.author.name}" id="author" disabled="true"/>
+                            <h:outputLabel value="Pris" for="price"/>
+                            <p:inplace>
+                                <p:inputNumber value="#{bookBean.updateBook.price}" id="price"/>
+                            </p:inplace>
+                            <h:panelGroup />
+                            <p:commandButton icon="fa fa-save"
+                                             action="#{bookBean.saveUpdatedBook()}"
+                                             onclick="PF('updateDialog').hide();"
+                                             update=":bookTable"/>
+                        </p:panelGrid>
+                    </h:form>
+                </p:dialog>
+            </div><!--mittenspalt-->
+            <div class="ui-g-2"></div><!--högerspalt-->
+
+        </div>
+    </h:body>
+</html>
+
